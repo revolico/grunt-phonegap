@@ -9,7 +9,7 @@
     copyApk = function(fn) {
       var dest, phonegapPath, releaseName, src, srcDir;
       phonegapPath = helpers.config('path');
-      srcDir = path.join(phonegapPath, 'platforms', 'android', 'bin');
+      srcDir = path.join(phonegapPath, 'platforms', 'android', 'build', 'outputs', 'apk');
       releaseName = helpers.config('releaseName');
       src = grunt.file.expand("" + srcDir + "/*-release.apk")[0];
       dest = path.join(helpers.config('releases'), 'android', "" + releaseName + ".apk");
@@ -39,7 +39,7 @@
       phonegapPath = helpers.config('path');
       keyStore = helpers.config('key.store');
       helpers.ensureExists(keyStore, 'You need to create a keystore file to generate a signed release (see http://developer.android.com/tools/publishing/app-signing.html)');
-      cmd = 'ant release';
+      cmd = 'cordova build --release android';
       cwd = path.join(phonegapPath, 'platforms', 'android');
       return helpers.exec(cmd, fn, cwd);
     };
@@ -47,7 +47,7 @@
       return path.join(helpers.config('path'), 'platforms', 'android');
     };
     antPropertiesFile = function() {
-      return path.join(platformPath('android'), 'ant.properties');
+      return path.join(platformPath('android'), 'release-signin.properties');
     };
     createReleasesPath = function(platform) {
       var releasesPath;
