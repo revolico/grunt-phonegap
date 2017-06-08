@@ -1,12 +1,13 @@
-(function() {
+(function () {
   var android, path;
 
   path = require('path');
 
-  module.exports = android = function(grunt) {
+  module.exports = android = function (grunt) {
     var antPropertiesFile, antRelease, copyApk, createReleasesPath, helpers, platformPath, setAntProperties;
     helpers = require('../helpers')(grunt);
-    copyApk = function(fn) {
+
+    copyApk = function (fn) {
       var dest, phonegapPath, releaseName, src, srcDir;
       phonegapPath = helpers.config('path');
       srcDir = path.join(phonegapPath, 'platforms', 'android', 'build', 'outputs', 'apk');
@@ -20,7 +21,8 @@
         return fn();
       }
     };
-    setAntProperties = function(includePasswords) {
+
+    setAntProperties = function (includePasswords) {
       var key, keyStorePath, properties;
       key = helpers.config('key');
       keyStorePath = path.relative(platformPath('android'), key.store);
@@ -34,33 +36,41 @@
       }
       return grunt.file.write(antPropertiesFile(), properties.join("\n"));
     };
-    antRelease = function(fn) {
-      var cmd, cwd, keyStore, phonegapPath;
+
+    antRelease = function (fn) {
+      var cmd, cwd, keyStore, phonegapPath, alias, storePassword, password;
       phonegapPath = helpers.config('path');
       keyStore = helpers.config('key.store');
       helpers.ensureExists(keyStore, 'You need to create a keystore file to generate a signed release (see http://developer.android.com/tools/publishing/app-signing.html)');
-      cmd = 'cordova build --release android';
+      alias = helpers.config('key.alias');
+      storePassword = helpers.config('key.storePassword');
+      password = helpers.config('key.aliasPassword');
+      cmd = 'cordova build android --release -- --keystore="../' + keyStore + '" --storePassword=' + storePassword + ' --alias=' + alias + ' --password=' + password;
       cwd = path.join(phonegapPath, 'platforms', 'android');
       return helpers.exec(cmd, fn, cwd);
     };
-    platformPath = function(platform) {
+
+    platformPath = function (platform) {
       return path.join(helpers.config('path'), 'platforms', 'android');
     };
-    antPropertiesFile = function() {
+
+    antPropertiesFile = function () {
       return path.join(platformPath('android'), 'release-signin.properties');
     };
-    createReleasesPath = function(platform) {
+
+    createReleasesPath = function (platform) {
       var releasesPath;
       releasesPath = helpers.config('releases');
       return grunt.file.mkdir(path.join(releasesPath, platform));
     };
+
     return {
-      release: function(fn) {
+      release: function (fn) {
         grunt.log.writeln('Creating release for \'android\' platform');
         createReleasesPath('android');
         setAntProperties(true);
-        return antRelease(function() {
-          return copyApk(function() {
+        return antRelease(function () {
+          return copyApk(function () {
             setAntProperties(false);
             return fn();
           });
