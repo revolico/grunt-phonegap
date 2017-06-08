@@ -23,7 +23,7 @@
     antDebug = function(fn) {
       var cmd, cwd, phonegapPath;
       phonegapPath = helpers.config('path');
-      cmd = 'ant debug';
+      cmd = 'cordova build android --verbose';
       cwd = path.join(phonegapPath, 'platforms', 'android');
       return helpers.exec(cmd, fn, cwd);
     };
