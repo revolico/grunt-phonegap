@@ -16,11 +16,11 @@
       setAndroidApplicationName: require('./android/application_name')(grunt).set,
       setManfifestParams: require('./android/manifest_params')(grunt).set,
       setScreenOrientation: require('./android/screen_orientation')(grunt).set,
-      setDebuggable: require('./android/debuggable')(grunt).set
+      // setDebuggable: require('./android/debuggable')(grunt).set
     };
     return {
       run: function(fn) {
-        return fluid(tasks).repairVersionCode().setMinSdkVersion().setTargetSdkVersion().setPermissions().setAndroidApplicationName().setManfifestParams().buildIcons().buildScreens().buildResources().setScreenOrientation().setDebuggable().go(function(err, result) {
+        return fluid(tasks).repairVersionCode().setMinSdkVersion().setTargetSdkVersion().setPermissions().setAndroidApplicationName().setManfifestParams().buildIcons().buildScreens().buildResources().setScreenOrientation().go(function(err, result) {
           if (err) {
             grunt.fatal(err);
           }
