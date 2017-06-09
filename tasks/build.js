@@ -15,6 +15,7 @@
       compileConfig: require('./build/base/compile_config')(grunt).run,
       copyConfig: require('./build/base/copy_config')(grunt).run,
       addPlugins: require('./build/base/plugin')(grunt).add,
+      addPlatforms: require('./build/base/addplatform')(grunt).add,
       buildPlatforms: require('./build/base/platform')(grunt).build
     };
     helpers = require('./helpers')(grunt);
@@ -24,6 +25,10 @@
         platforms = helpers.reducePlatforms(platforms);
         return fluid(base).clean().createTree(platforms).cloneRoot().cloneMerges().indexHtml().cloneCordova().compileConfig().copyConfig().custom(function(done) {
           return base.addPlugins(plugins, function() {
+            return done();
+          });
+        }).custom(function(done) {
+          return base.addPlatforms(platforms, function() {
             return done();
           });
         }).custom(function(done) {
